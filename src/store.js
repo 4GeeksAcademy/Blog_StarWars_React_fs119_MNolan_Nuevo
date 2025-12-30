@@ -1,32 +1,31 @@
-export const initialStore=()=>{
-  return{
-    message: null,
-    todos: [
-      {
-        id: 1,
-        title: "Make the bed",
-        background: null,
-      },
-      {
-        id: 2,
-        title: "Do my homework",
-        background: null,
-      }
-    ]
+export const initialStore = () => {
+  return {
+    favorites: [],
+    characters: [],
+    planets: [],
+    starships: [],
+    baseURL: "https://swapi.tech/api"
   }
 }
 
 export default function storeReducer(store, action = {}) {
-  switch(action.type){
-    case 'add_task':
+  switch (action.type) {
+    case "setData":
+      return { ...store, [action.key]: action.payload };
 
-      const { id,  color } = action.payload
-
+    case "addFavorite":
+      if (store.favorites.some((fav) => fav.id === action.payload.id && fav.type === action.payload.type))
+        return store;
+      return { ...store, favorites: [...store.favorites, action.payload] };
+    
+      case "removeFavorite":
       return {
         ...store,
-        todos: store.todos.map((todo) => (todo.id === id ? { ...todo, background: color } : todo))
+        favorites: store.favorites.filter(
+          (fav) => !(fav.id === action.payload.id && fav.type === action.payload.type)
+        ),
       };
     default:
       throw Error('Unknown action.');
-  }    
+  }
 }
